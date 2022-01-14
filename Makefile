@@ -1,4 +1,4 @@
-NAME	=		LDLogger
+NAME	=		libLDLogger
 
 CC 		=		clang++
 
