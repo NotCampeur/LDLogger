@@ -94,14 +94,33 @@ class Logger
 		// This tell you if the current instance will be allow to write entry.
 		bool	is_important_enough(void) const;
 		
-		Logger	&operator<<(const std::string & entry);
-		Logger	&operator<<(const char * const & entry);
-		Logger	&operator<<(const char & entry);
-		Logger	&operator<<(const int & entry);
-		Logger	&operator<<(const ssize_t & entry);
-		Logger	&operator<<(const size_t & entry);
-		Logger	&operator<<(const bool & entry);
+		// The operator << will be used to write the entry on the previously opened log file.
+		// The type T need his own operator <<.
+		template< class T >
+		Logger	&operator<<(const T & entry)
+		{
+			if (is_important_enough())
+			{
+				_file << entry;
+				_file.flush();
+			}
+			return *this;
+		}
 
+		// A specialisation of the operator << for bool.
+		template< bool >
+		Logger	&operator<<(const bool & entry)
+		{
+			if (is_important_enough())
+			{
+				if (entry == true)
+					_file << "true";
+				else
+					_file << "false";
+			}
+			return *this;
+		}
+		
 	private:
 		static std::ofstream		_file;
 		static log_importance_level	_accepted_importance;
